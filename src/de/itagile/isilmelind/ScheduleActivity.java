@@ -104,7 +104,7 @@ public class ScheduleActivity extends ListActivity {
 		String startTime = cursor.getString(ScheduleTable.COLUMN_START_INDEX);
 		String endTime = cursor.getString(ScheduleTable.COLUMN_END_INDEX);
 		int columnIndex = cursor
-				.getColumnIndex(OccupationTable._ID);
+				.getColumnIndex(ScheduleTable.COLUMN_OCCUPATION_ID);
 		int occupationId = cursor.getInt(columnIndex);
 		Intent intent = createEditIntent();
 		intent.putExtra(ScheduleTable._ID, id);
@@ -133,7 +133,7 @@ public class ScheduleActivity extends ListActivity {
 				+ ScheduleTable._ID + ", " + ScheduleTable.COLUMN_START + ", "
 				+ ScheduleTable.COLUMN_END + ", " + OccupationTable.COLUMN_NAME
 				+ ", " + OccupationTable.COLUMN_RATING + ", "
-				+ OccupationTable.NAME + "." + OccupationTable._ID + " as OID "
+				+ ScheduleTable.COLUMN_OCCUPATION_ID
 				+ " FROM " + ScheduleTable.NAME + " join "
 				+ OccupationTable.NAME + " on "
 				+ ScheduleTable.COLUMN_OCCUPATION_ID + " = "
