@@ -21,7 +21,6 @@ target
 tmp
 *~
 lib
-libs
 test-output
 logs
 *.log

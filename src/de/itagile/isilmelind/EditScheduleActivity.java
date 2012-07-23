@@ -1,9 +1,13 @@
 package de.itagile.isilmelind;
 
+import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
+
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.format.Time;
 import android.util.Log;
@@ -12,15 +16,18 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.support.v4.app.LoaderManager;
 import de.itagile.isilmelind.IsilmelindDbOpenHelper.OccupationTable;
 import de.itagile.isilmelind.TimePickerFragment.TimePickerDialogListener;
 
 public class EditScheduleActivity extends FragmentActivity implements
-		TimePickerDialogListener, OnItemSelectedListener {
+		TimePickerDialogListener, OnItemSelectedListener,
+		LoaderManager.LoaderCallbacks<Cursor> {
 
 	private IsilmelindDbOpenHelper dbHelper;
 	public static final String START = "start";
 	public static final String END = "end";
+	private SimpleCursorAdapter adapter;
 
 	public void cancel(View view) {
 		setResult(RESULT_CANCELED);
@@ -55,6 +62,11 @@ public class EditScheduleActivity extends FragmentActivity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		dbHelper = IsilmelindDbOpenHelper.getInstance(this);
+		adapter = new SimpleCursorAdapter(this,
+				android.R.layout.simple_spinner_item, null,
+				new String[] { OccupationTable.COLUMN_NAME, },
+				new int[] { android.R.id.text1 }, 0);
+		getSupportLoaderManager().initLoader(0, null, this);
 		setContentView(R.layout.edit_schedule);
 		prefillViews(getIntent());
 	}
@@ -62,23 +74,20 @@ public class EditScheduleActivity extends FragmentActivity implements
 	private void prefillViews(Intent intent) {
 		prefillButton(intent, R.id.edit_schedule_start, START);
 		prefillButton(intent, R.id.edit_schedule_end, END);
-		prefillOccupation(intent);
 	}
 
 	private void prefillOccupation(Intent intent) {
 		Spinner occupations = (Spinner) findViewById(R.id.edit_schedule_occupation_name);
-		SimpleCursorAdapter scAdapter = new SimpleCursorAdapter(this,
-				android.R.layout.simple_spinner_item, dbHelper.selectAll(),
-				new String[] { OccupationTable.COLUMN_NAME, },
-				new int[] { android.R.id.text1 }, 0);
-		scAdapter
+		
+		adapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		occupations.setAdapter(scAdapter);
+		occupations.setAdapter(adapter);
 		occupations.setOnItemSelectedListener(this);
 		int occupationId = intent.getIntExtra("occupationId", -1);
 		if (occupationId > -1) {
 			for (int position = 0; position < occupations.getCount(); position++) {
-				Cursor cursor = (Cursor) occupations.getItemAtPosition(position);
+				Cursor cursor = (Cursor) occupations
+						.getItemAtPosition(position);
 				if (cursor.getInt(0) == occupationId) {
 					occupations.setSelection(position);
 					break;
@@ -135,5 +144,22 @@ public class EditScheduleActivity extends FragmentActivity implements
 
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
+		return new SQLiteCursorLoader(this, dbHelper.getReadableDatabase(),
+				"SELECT  * FROM " + OccupationTable.NAME, null);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor) {
+		adapter.changeCursor(cursor);
+		prefillOccupation(getIntent());
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+		adapter.changeCursor(null);
 	}
 }
