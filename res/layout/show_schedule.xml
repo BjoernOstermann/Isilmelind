@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/show_schedule_start"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:padding="8dp"
+        android:text="@string/schedule_placeholder_time" />
+
+    <TextView
+        android:id="@+id/show_schedule_end"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/show_schedule_start"
+        android:padding="8dp"
+        android:text="@string/schedule_placeholder_time" />
+
+    <TextView
+        android:id="@+id/show_schedule_occupation_rating"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:padding="8dp"
+        android:text="@string/occupation_placeholder_rating" />
+
+    <TextView
+        android:id="@+id/show_schedule_occupation_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/show_schedule_end"
+        android:layout_toLeftOf="@id/show_schedule_occupation_rating"
+        android:padding="8dp"
+        android:text="@string/occupation_placeholder_name" />
+
+</RelativeLayout>
