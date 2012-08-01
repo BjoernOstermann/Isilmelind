@@ -42,6 +42,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.itagile.isilmelind.OccupationActivity" />
         </activity>
+        
+        <provider
+      		android:name=".IsilmelindContentProvider"
+      		android:authorities="de.itagile.isilmelind.contentprovider" 
+      		android:exported="true">
+   		</provider>
     </application>
 
 </manifest>
